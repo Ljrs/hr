@@ -61,9 +61,12 @@ export default {
   },
   methods: {
     login() {
-      this.$refs.form.validate((isOK) => {
+      this.$refs.form.validate(async(isOK) => {
         if (isOK) {
-          this.$strore.dispatch('user/login', this.loginForm)
+          await this.$strore.dispatch('user/login', this.loginForm)
+          // vuex中的action 返回的promise
+          // 跳转主页
+          this.$router.push('/') 
         }
       }
       )
