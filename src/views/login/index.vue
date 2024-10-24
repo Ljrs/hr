@@ -63,7 +63,7 @@ export default {
     login() {
       this.$refs.form.validate((isOK) => {
         if (isOK) {
-          alert('登录成功')
+          this.$strore.dispatch('user/login', this.loginForm)
         }
       }
       )
