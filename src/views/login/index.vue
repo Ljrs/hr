@@ -5,20 +5,20 @@
       <h1>登录</h1>
       <el-card shadow="never" class="login-card">
         <!--登录表单-->
-        <el-form>
-          <el-form-item>
-            <el-input placeholder="请输入手机号" />
+        <el-form ref="form" :rules="loginRules" :model="loginForm">
+          <el-form-item prop="mobile">
+            <el-input v-model="loginForm.mobile" placeholder="请输入手机号" />
           </el-form-item>
-          <el-form-item>
-            <el-input placeholder="请输入密码" />
+          <el-form-item prop="password">
+            <el-input v-model="loginForm.password" show-password type="password" placeholder="请输入密码" />
           </el-form-item>
-          <el-form-item>
-            <el-checkbox>
+          <el-form-item prop="isAgree">
+            <el-checkbox v-model="loginForm.isAgree">
               用户平台使用协议
             </el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" style="width:350px">登录</el-button>
+            <el-button type="primary" style="width:350px" @click="login">登录</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -27,8 +27,50 @@
 </template>
 <script>
 export default {
-  name: 'Login'
+  name: 'Login',
+  data() {
+    return {
+      loginForm: {
+        mobile: '',
+        password: '',
+        isAgree: false
+      },
+      loginRules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          // pattern:正则表达式
+          { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 16, message: '密码长度在6到16个字符', trigger: 'blur' },
+          { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[A-Z][a-z0-9]{5,15}$/, message: '密码必须以大写字母开头并包含数字和字母', trigger: 'blur' }
+        ],
+        // required只能检测 null undefined ''
+        isAgree: [{
+          validator: (rule, value, callback) => {
+            // rule规则
+            // value检查的数据 true/false
+            // callback 函数 执行这个函数
+            // 成功执行callback 失败也执行callback(错误对象 new Error(错误信息))
+            value ? callback() : callback(new Error('请勾选用户平台协议'))
+          }
+        }]
+      }
+    }
+  },
+  methods: {
+    login() {
+      this.$refs.form.validate((isOK) => {
+        if (isOK) {
+          alert('登录成功')
+        }
+      }
+      )
+    }
+  }
 }
+
 </script>
 <style lang="scss">
 .login-container {
